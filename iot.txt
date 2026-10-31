@@ -1,0 +1,190 @@
+7. Develop a program to read the pH Value of a various substances like milk, lime and water
+
+#define PH_PIN 34
+
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+  int value = analogRead(PH_PIN);
+  float voltage = value * 3.3 / 4095.0;
+  float pH = 7.0 + (1.65 - voltage) * 3.5;
+
+  Serial.print("pH Value: ");
+  Serial.println(pH);
+
+  delay(2000);
+}
+
+
+8. Develop a program to detect the gas leakage in the surrounding environment
+
+/** Example testing sketch for Analog Gas sensor **/
+
+//Define pin
+int gas_pin = 2; //Arduino pin #8/A0 or Board pin P11
+
+void setup()
+{
+  pinMode(gas_pin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  int gas_value = analogRead(gas_pin);
+  Serial.print("Gas Value : ");
+  Serial.println(gas_value);
+
+  // TODO: Check if it has reached the threshold value
+  delay(1500);
+}
+
+
+9. Develop a program to demonstrate weather station readings using Arduino
+
+#include <DHT.h>
+#include <Wire.h>
+
+#define DHT11PIN 12
+
+DHT dht(DHT11PIN, DHT11);
+
+void setup()
+{
+  Serial.begin(9600); /* Start the DHT11 Sensor */
+  dht.begin();
+}
+
+void loop()
+{
+  float humi = dht.readHumidity();
+  float temp = dht.readTemperature();
+
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println(" C ");
+
+  Serial.print("Humidity: ");
+  Serial.println(humi);
+
+  delay(1000);
+}
+
+
+10. Develop a program to setup a UART protocol and pass a string through the protocol
+
+/* Example sketch to test Bluetooth Xtrans Solutions Pvt Ltd
+ * www.xtranssolutions.com
+ * Connect RM24 to RM25
+ * to check PIN use Command AT+PIN
+ * Now you can send and receive messages from any serial application like Hyper Terminal to Arduino
+ * Serial Monitor and vice versa
+*/
+
+#include<SoftwareSerial.h>
+
+/* Create object named bt of the class SoftwareSerial */
+SoftwareSerial bt(3,1); /* (Rx,Tx) */
+
+void setup()
+{
+  bt.begin(9600); /* Define baud rate for software serial communication */
+  Serial.begin(9600); /* Define baud rate for serial communication */
+}
+
+void loop()
+{
+  if (bt.available()){ /* If data is available on serial port */
+    Serial.write(bt.read()); /* Print character received on to the serial monitor */
+  }
+
+  if(Serial.available()) {
+    bt.write(Serial.read());
+  }
+}
+
+
+11. Develop a water level depth detection system using Ultrasonic sensor
+
+const int trigPin = 26; //trig
+const int echoPin = 25; //Echo
+
+long duration;
+int distance;
+
+void setup()
+{
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  Serial.begin(9600); // Starts the serial communication
+}
+
+void loop()
+{
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+
+  // Prints the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+  delay(2000);
+}
+
+
+12. Develop a program to simulate interfacing with the keypad module to record the keystrokes
+
+/* Demonstrates changing the keypad size and key values.*/
+
+#include <Keypad.h>
+
+const byte ROWS = 4; /* four rows */
+const byte COLS = 4; /* four columns */
+
+/* define the symbols on the buttons of the keypads */
+char hexaKeys[ROWS][COLS] = {
+  {'0','1','2','3'},
+  {'4','5','6','7'},
+  {'8','9','A','B'},
+  {'C','D','E','F'}
+};
+
+byte rowPins[ROWS] = {13, 12, 14, 27}; /* connect to the row pinouts of the keypad */
+byte colPins[COLS] = {26, 25, 33, 32}; /* connect to the column pinouts of the keypad */
+
+/* initialize an instance of class NewKeypad */
+Keypad customKeypad = Keypad(
+  makeKeymap(hexaKeys),
+  rowPins,
+  colPins,
+  ROWS,
+  COLS
+);
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  char customKey = customKeypad.getKey();
+
+  if (customKey){
+    Serial.println(customKey);
+  }
+}
